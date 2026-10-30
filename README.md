@@ -321,6 +321,41 @@ python -m pytest test_backtest.py test_app.py -v
 **A profitable result is not required or claimed.** The point is a
 reproducible, readable implementation of stated rules.
 
+## Presentation
+
+A Beamer deck summarizing the model, the dashboard, and the results:
+
+- **Source:** `presentation/slides.tex` (metropolis theme, 15 slides).
+- **Built PDF:** `presentation/slides.pdf`
+  ([view on GitHub](https://github.com/radvect/spy-long-straddle-backtest/blob/main/presentation/slides.pdf)).
+- **Figures:** `presentation/figures/` — the dashboard screenshots the deck
+  shows stay **static** (the build does not re-capture them); the other
+  illustrations are drawn in TikZ/pgfplots directly inside the source.
+- **Generated numbers:** `presentation/generated/results.tex` — a small set
+  of `\newcommand` macros (`\TotalReturn`, `\MaxDrawdown`, `\WinRate`,
+  `\TradeCount`, `\FinalValue`, `\NetPnlSum`, `\WinCount`, `\LossCount`)
+  whose values are **computed from the engine** at build time, never typed
+  by hand. The result fields in `slides.tex` reference these commands, so
+  the deck and the backtest cannot drift apart.
+
+### Rebuilding the PDF
+
+```powershell
+py -3.12 scripts/build_presentation.py
+```
+
+The script (1) reproduces the reference configuration through the existing
+engine (SPY Jan 2020 – Dec 2025, $10,000 capital, target DTE 30,
+risk-free 1.0%, dividend yield 1.3%), (2) writes
+`presentation/generated/results.tex` from the computed summary, (3) checks
+that every `\includegraphics` target exists, and (4) compiles
+`slides.tex` to `slides.pdf`. If no LaTeX toolchain (pdflatex/latexmk/
+xelatex/lualatex) is found, it prints installation instructions and leaves
+the existing `slides.pdf` unchanged. To refresh the deck's dashboard
+screenshots, re-capture them from the running dashboard and replace the
+matching files in `figures/` (`top_dashboard_complete.png`,
+`trade_history_cropped.png`, `equity_drawdown_cropped.png`).
+
 ## Files
 
 - `app.py` — Streamlit dashboard (single page).
@@ -334,7 +369,9 @@ reproducible, readable implementation of stated rules.
 - `REVIEW.md` — the audit trail: four review rounds, the bugs found and
   fixed (dividend double-count, settlement double-spread), and a list of
   likely interview questions. Kept as the record of the decisions.
-- `presentation/` — reserved for a LaTeX presentation
-  (`slides.tex`, `figures/`, `slides.pdf`), to be added in a later commit.
-  Currently contains only a `.gitkeep` placeholder; no presentation
-  files exist yet.
+- `presentation/` — the LaTeX presentation: `slides.tex`, `slides.pdf`,
+  `figures/` (screenshots + assets), and `generated/results.tex` (numbers
+  computed from the engine at build time). See the
+  [Presentation](#presentation) section.
+- `scripts/` — build tooling; `build_presentation.py` regenerates the
+  deck's numbers and rebuilds `slides.pdf`.

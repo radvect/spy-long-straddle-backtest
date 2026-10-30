@@ -3,6 +3,8 @@
 Run:  streamlit run app.py
 """
 
+from pathlib import Path
+
 import pandas as pd
 import plotly.graph_objects as go
 import streamlit as st
@@ -15,6 +17,27 @@ st.set_page_config(page_title="SPY Long Straddle Backtest", layout="wide")
 
 st.title("SPY Long Straddle Backtest")
 st.caption("Monthly SPY options strategy | 2020-2025 | Modeled prices")
+
+# ---------------------------------------------------------------------------
+# Presentation link (unobtrusive, native components). Points at the PDF
+# hosted in the repo. No PDF is regenerated or compiled on load.
+#
+# The repo-hosted URL is the canonical, permanent link. While the PDF has
+# not yet been committed/pushed to the repo, that URL 404s — so, if the
+# PDF exists in the local working tree, a native download button is shown
+# as a fallback that works immediately. (We do not make a network call to
+# probe GitHub on every load; the local file is the trigger.)
+# ---------------------------------------------------------------------------
+_PDF_GITHUB = ("https://github.com/radvect/spy-long-straddle-backtest/"
+               "blob/main/presentation/slides.pdf")
+_PDF_LOCAL = Path(__file__).resolve().parent / "presentation" / "slides.pdf"
+st.link_button("View Presentation (PDF)", _PDF_GITHUB,
+               use_container_width=False)
+if _PDF_LOCAL.is_file():
+    st.download_button("Download presentation (local copy)",
+                       data=_PDF_LOCAL.read_bytes(),
+                       file_name="slides.pdf", mime="application/pdf",
+                       use_container_width=False)
 
 # ---------------------------------------------------------------------------
 # Minimal CSS: centered 1200px container, metric cards, compact trade table,
