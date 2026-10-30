@@ -1,0 +1,17 @@
+# SPY Long Straddle Backtest — dependencies.
+#
+# Lower bounds are the minimum versions the code was developed and tested
+# against; the exact pinned versions known to work (Python 3.12) are:
+#   pandas 3.1.0, numpy 2.5.3, scipy 1.18.1, yfinance 1.7.0,
+#   streamlit 1.66.1, plotly 7.1.0, pytest 9.1.1
+#
+# Runtime (the dashboard + engine):
+pandas>=3.1.0
+numpy>=2.5.0
+scipy>=1.18.0
+yfinance>=1.7.0
+streamlit>=1.66.0
+plotly>=7.1.0
+
+# Test suite (python -m pytest):
+pytest>=8.0.0
