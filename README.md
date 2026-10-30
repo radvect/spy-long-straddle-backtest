@@ -60,16 +60,65 @@ fails, the page shows the error and stops — it never invents results.
 
 ## 2. Install and run
 
+### Prerequisites
+
+- **Python 3.12** — the version the project was developed and tested
+  against (see the exact package versions in `requirements.txt`).
+- **Internet access on first load** — the dashboard downloads ~6 years of
+  daily SPY and VIX closes from Yahoo Finance via `yfinance`.
+
+### Steps
+
+Commands below use PowerShell (Windows); the same commands work on
+macOS/Linux with the noted substitution.
+
 ```powershell
-# from the project folder, Python 3.12
+# 1. From the project folder, create and activate a virtual environment
+#    (optional but recommended)
+python -m venv .venv
+.\.venv\Scripts\Activate.psl
+#    macOS/Linux instead of the two lines above:
+#      python3 -m venv .venv && source .venv/bin/activate
+
+# 2. Install the dependencies
 pip install -r requirements.txt
 
-# built-in self-tests (option payoffs, parity, reference values, accounting)
+# 3. (Optional, before first launch) run the built-in self-tests:
+#    option payoffs, put-call parity, literature reference values,
+#    accounting invariants. Expect "All self-tests passed."
 python backtest.py
 
-# launch the dashboard, then open http://localhost:8501
+# 4. Launch the dashboard
 streamlit run app.py
 ```
+
+Then open **http://localhost:8501** in a browser. Streamlit prints the
+local URL when the server starts and stays running until you stop it.
+
+### What happens on first load
+
+The page downloads the SPY and VIX series (cached for one hour by
+`st.cache_data`, so page reloads within the hour do not re-download) and
+runs the backtest. If the download fails, the page shows the error and
+stops — it never invents results.
+
+### Using the dashboard
+
+- Every control (Target DTE, Initial Capital, Risk-Free Rate, Dividend
+  Yield) is a real engine input: changing one re-runs the full pricing
+  and accounting path live. There is no "Run" button.
+- The *Expiration* toggle switches between `Fixed DTE` (the full
+  backtest, shown above) and `Optimal DTE (TBD)` (not implemented; it
+  shows a notice and runs no backtest).
+- Stop the server with **Ctrl+C** in the terminal that runs Streamlit.
+
+### If port 8501 is already in use
+
+```powershell
+streamlit run app.py --server.port 8502
+```
+
+…then open http://localhost:8502 instead.
 
 ## 3. Data sources
 
